@@ -21,3 +21,6 @@ db.sqlite3
 # Environment variables
 # 秘密情報を書くファイル
 .env
+
+# ruffがlint結果を高速化するためのキャッシュ
+.ruff_cache/
