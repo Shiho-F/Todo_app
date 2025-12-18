@@ -51,6 +51,18 @@ class Todo(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     # (auto_now=True) → 保存されるたびに、現在時刻で自動更新される
 
+    tags = models.ManyToManyField(
+        # 多対多(ManyToManyField)を表すからtags(複数形)になる
+        "Tag",
+        # タグ(Tag)モデルと繋がってる
+        blank=True,
+        # タグなしでもOKにしている
+        related_name="todos",
+        # TagからTodoを取得するための名前を定義
+        # tag.todos.all()でこのタグに紐づいている全てのタスクを取得している
+        verbose_name="タグ",
+    )
+
     def __str__(self):
         # __str__ → 文字列としてオブジェクト名を表示させる時に使用するPythonメソッド
         # (管理画面・フォーム・print()など)
@@ -81,3 +93,8 @@ class Tag(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     # 更新日時カラム
     updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+    # ここではタグの名前を表示させている
