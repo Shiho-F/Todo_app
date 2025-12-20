@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form action="" method="POST">
+    {% csrf_token %}
+    {% comment %} 
+    CSRF攻撃を防ぐためにPOSTフォームには{% csrf_token %}が必須
+    {% endcomment %}
+    <table>
+        {{ form.as_table }}
+        {% comment %}
+        CreateViewを使用している場合、{{form}}と書くことで
+        models.pyのTodoモデルとViewで指定したfieldsをもとに、
+        Djangoが自動でフォームを生成しformとしてテンプレートに渡してくれる
+        as_tableはformの中身をtable用のHTMLに変換してくれるメソッド
+        {% endcomment %}
+    </table>
+    <input type="submit" value="送信">
+</form>
+
+
+{% endblock content %}

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% comment %} ここからforループ {% endcomment %}
+{% for todo in todos %}
+{% comment %} 
+todoの一覧が入っているのはデフォルトでオブジェクトリストになるので
+全てのtodoが入っているオブジェクトリストの中から、1つずつ変数todoの中にデータが入っていく
+{% endcomment %}
+<h3>{{ todo.title }}</h3>
+<p>{{ todo.due_date }}</p>
+{% if todo.is_completed %}
+    <P>完了</P>
+{% else %}
+    <p>未完了</p>
+{% endif %}
+{% endfor %}
+
+{% endblock content %}
