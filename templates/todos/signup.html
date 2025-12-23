@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<div class="card">
+<div class="card-body">
+    <h2 class="text-center mb-4">新規登録</h2>
+    {% comment %}
+    text-centerはUtilities/Text
+    mb-4はBootstrapのUtilities/Spacing
+    m = margin
+    b = bottom
+    4 = $spacer * 1.5
+    つまり margin-bottom: 1.5rem;
+    {% endcomment %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.username.id_for_label}}">ユーザー名</label>
+            {% comment %} 
+            {{ form.username.id_for_label}}を分解すると
+            ・form : views.pyからテンプレートに渡されたDjango Formインスタンス
+            ・username : Formに定義されてるフィールド名
+            ・id_for_label : Djangoがすでに決めたinputのidを取り出すためのプロパティ
+
+            HTML上でlabelとinputを紐付けるためにid(id_username)を取得している
+            labelとinputを紐づけることで、「これは何の入力欄か」を人にも機械にも正しく伝えている(UX向上のため)
+            {% endcomment %}
+            {{ form.username }}
+            {% comment %} 
+            views.pyで定義したwidgetを描写している
+            {% endcomment %}
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.email.id_label }}">Eメール</label>
+            {{ form.email }}
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.password1.id_for_label }}">パスワード</label>
+            {{ form.password1 }}
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.password2.id_for_label }}">パスワード確認用</label>
+            {{ form.password2 }}
+        </div>
+        <button type="submit" class="btn btn-success w-100">登録</button>
+        {% comment %} 
+        btn btn-success　→　Components/Buttons
+        w-100 →　Utilties/Sizing
+        {% endcomment %}
+    </form>
+
+</div>
+</div>
+{% comment %} 
+"card":BootstrapのComponents/Cardに含まれるコンポーネント
+情報のまとまりを表すためのUIコンポーネント
+ログイン/サインアップなど、1画面で完結する認証フォームと相性が良い 
+{% endcomment %}
+
+{% endblock content %}
