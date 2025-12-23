@@ -51,9 +51,3 @@ class TodoCreateView(CreateView):
     # success_url：作成成功後　はTodo一覧画面へリダイレクト
 
 
-# 新規登録
-class SignupView(CreateView):
-    template_name = "todos/signup.html"
-
-    success_url = reverse_lazy("todo_list")
-    # success_url：作成成功後　はTodo一覧画面へリダイレクト
