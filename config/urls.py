@@ -20,7 +20,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("todos/", include('todos.urls'))
+    path("todos/", include("todos.urls")),
     # config/urls.pyが入口
     # /todos/まで来たらあとはtodos.urlsに任せる
 ]
