@@ -103,6 +103,20 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+# Authenticaiton settings
+LOGIN_REDIRECT_URL = "todo_list"
+# ログイン成功後にどこにリダイレクトするか
+LOGOUT_REDIRECT_URL = "login"
+# ログアウト後にどこへ行くか
+LOGIN_URL = "login"
+# ログインしてない人が「ログイン必須ページ」に来たとき、どこに飛ばすか
+
+# Djangoでは認証はアプリ横断の仕組みとして設計されているため、
+# ログイン後や未認証時のリダイレクト先は
+# プロジェクト全体の設定として settings.py に定義する
+# これにより、Viewの責務をシンプルに保ちつつ、変更にも強い構成になる
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
