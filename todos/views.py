@@ -7,6 +7,17 @@ from django.urls import reverse_lazy
 
 from todos.models import Todo
 
+from .forms import CustomUserCreationForm
+
+
+# サインアップ
+class SignUpView(CreateView):
+    template_name = "todos/signup.html"
+    form_class = CustomUserCreationForm
+    # forms.pyで定義したCustomCreationFormを参照している
+    success_url = reverse_lazy("todo_list")
+    # まだログインのURLを定義していないので、後でloginにする
+
 
 # タスク一覧画面
 class TodoListView(ListView):
@@ -38,3 +49,5 @@ class TodoCreateView(CreateView):
     # ユーザーが操作可能なフィールドのみを明示的に指定している
     success_url = reverse_lazy("todo_list")
     # success_url：作成成功後　はTodo一覧画面へリダイレクト
+
+
