@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <p class="text-center mb-4">ログイン</p>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label" for="{{ form.username.id_for_label }}">ユーザーネーム</label>
+                {{ form.username }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="{{ form.password.id_for_label }}">パスワード</label>
+                {{ form.password }}
+            </div>
+            <button type="submit" class="btn btn-success w-100">ログイン</button>
+
+        </form>
+    </div>
+    </div>
+    {% endblock content %}

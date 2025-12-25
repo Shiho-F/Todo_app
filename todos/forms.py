@@ -6,11 +6,15 @@ from django.contrib.auth.models import User
 # Django標準ユーザーモデルをインポート
 # DjangoはUserモデルを参照する場合はget_user_modelを推奨しているが(将来Userを拡張できるようにするため)
 # 今回は標準Userを使用するため、Userを直接参照している
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 # UserCreationForm：パスワード付きユーザー作成を安全にやってくれるDjango標準フォーム
 # ①パスワード入力欄を用意②パスワード一致チェック③パスワードのバリデーション④パスワードをハッシュ化して保存
 # これを自動でやってくれる
 # ハッシュ化　= 元のパスワードを元に戻せない形に変換すること
+# AuthenticationForm = Django標準のログインフォーム
+# フィールドを自動で持っている(username・password)
+# エラーメッセージを自動で管理してくれる
+# {{ form.non_field_errors }}これがそのまま使える
 
 
 # サインアップフォーム
@@ -25,7 +29,7 @@ class CustomUserCreationForm(UserCreationForm):
         # このプロジェクトで使用されているUserモデルを指定している
         # 今回はDjango標準のユーザーモデルを参照
 
-        fields = ("username", "email", "password1", "password2")
+        fields = ("username", "email")
         # フォームでユーザーに入力させるフィールドを定義している
         # フォームの仕様として変更されることを想定していないため、タプルを使用している
 
@@ -57,4 +61,20 @@ class CustomUserCreationForm(UserCreationForm):
         )
         self.fields["password2"].widget = forms.PasswordInput(
             attrs={"class": "form-control", "id": "password2"}
+        )
+
+
+# ログインフォーム
+# AuthenticationFormはModelFormではないため
+# widgetsはMetaではなく__init__で上書きする
+class LoginForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["username"].widget = forms.TextInput(
+            attrs={"class": "form-control", "autofocus": True}
+        )
+
+        self.fields["password"].widget = forms.PasswordInput(
+            attrs={"class": "form-control"}
         )
