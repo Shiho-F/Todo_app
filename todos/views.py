@@ -12,6 +12,9 @@ from todos.models import Todo
 
 from .forms import CustomUserCreationForm, LoginForm
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+# LoginRequiredMixin：ログインしているユーザーだけにアクセスを許可するView
+
 
 # サインアップビュー
 class SignUpView(CreateView):
@@ -30,7 +33,7 @@ class MyLoginView(LoginView):
 
 
 # タスク一覧画面ビュー
-class TodoListView(ListView):
+class TodoListView(LoginRequiredMixin, ListView):
     model = Todo
     template_name = "todos/todo_list.html"
     # template_nameは書かなくても自動推測してくれるが、明示するために書く。
@@ -42,7 +45,7 @@ class TodoListView(ListView):
 
 
 # タスクの詳細画面ビュー
-class TodoDetailView(DetailView):
+class TodoDetailView(LoginRequiredMixin, DetailView):
     model = Todo
     template_name = "todos/todo_detail.html"
     context_object_name = "todo"
@@ -50,7 +53,7 @@ class TodoDetailView(DetailView):
 
 
 # タスクの作成ビュー
-class TodoCreateView(CreateView):
+class TodoCreateView(LoginRequiredMixin, CreateView):
     model = Todo
     template_name = "todos/todo_form.html"
     # 後で編集機能の追加もできるようにtodo_form.htmlにしている
