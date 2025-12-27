@@ -6,6 +6,7 @@ from todos.views import (
     TodoCreateView,
     SignUpView,
     MyLoginView,
+    MyLogoutView,
 )
 
 urlpatterns = [
@@ -13,6 +14,8 @@ urlpatterns = [
     path("signup/", SignUpView.as_view(), name="signup"),
     # ログイン
     path("login/", MyLoginView.as_view(), name="login"),
+    # ログアウト
+    path("logout/", MyLogoutView.as_view(), name="logout"),
     # タスク一覧
     path("", TodoListView.as_view(), name="todo_list"),
     # ここでの"""は/todos/の続きが何もない状態を表している

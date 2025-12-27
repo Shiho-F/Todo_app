@@ -1,6 +1,13 @@
 {% extends 'base.html' %}
 
+{% block header %}
+
+<a href="{% url "logout" %}">ログアウト</a>
+
+{% endblock header %}
+
 {% block content %}
+
 {% comment %} ここからforループ {% endcomment %}
 {% for todo in todos %}
 {% comment %} 
