@@ -3,7 +3,7 @@ from django.views.generic import ListView, DetailView, CreateView
 # ListView:一覧表示
 # DetailView：詳細表示
 # CreateView:タスクを作成
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, LogoutView
 # loginView:ログイン処理を全部やってくれるDjango標準のView
 
 from django.urls import reverse_lazy
@@ -30,6 +30,12 @@ class MyLoginView(LoginView):
     form_class = LoginForm
     redirect_authenticated_user = True
     # すでにログインしてる人が/login/に来たらTodo一覧に飛ばす
+
+
+# ログアウトビュー
+class MyLogoutView(LogoutView):
+    next_page = "login"
+    # ログアウトが終わった後に、どこに移動するかを指定している
 
 
 # タスク一覧画面ビュー
