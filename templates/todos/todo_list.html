@@ -8,6 +8,24 @@
 
 {% block content %}
 
+<form method="get">
+    {% for tag in all_tags %}
+    {% comment %} タグ一覧(all_tags)に入っているタグを1個ずつ順番に扱う {% endcomment %}
+    <label>
+        <input type="checkbox" class="form-check-input" name="tag" value="{{ tag.id }}"
+        {% if tag.id|stringformat:"s" in selected_tag_ids %}checked{% endif %}>
+        {% comment %}
+        selected_tag_idsはGETパラメータから取得した「現在の検索条件(選択中のタグID)」の一覧
+        tag.id|stringformat:"s"は、DBのtag.id(int)を検索条件(文字列)と型を揃えて比較するため、文字列に変換している
+        現在、描画しているタグのIDがselected_tag_idsに含まれている場合、
+        「このタグは検索条件として選択中」と判断し、checkedを付けて画面上のチェック状態を検索条件と一致させている。 
+        {% endcomment %}
+        {{ tag.name }}
+    </label>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">絞り込み</button>
+</form>
+
 {% comment %} ここからforループ {% endcomment %}
 {% for todo in todos %}
 {% comment %} 
@@ -15,7 +33,7 @@ todoの一覧が入っているのはデフォルトでオブジェクトリス�
 全てのtodoが入っているオブジェクトリストの中から、1つずつ変数todoの中にデータが入っていく
 {% endcomment %}
 <h3>{{ todo.title }}</h3>
-<p>{{ todo.due_date }}</p>
+<p>{{ todo.due_date|default:"期限なし"}}</p>
 {% if todo.is_completed %}
     <P>完了</P>
 {% else %}
