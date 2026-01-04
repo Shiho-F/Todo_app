@@ -7,6 +7,7 @@ from todos.views import (
     SignUpView,
     MyLoginView,
     MyLogoutView,
+    TagCreateView,
 )
 
 urlpatterns = [
@@ -24,4 +25,6 @@ urlpatterns = [
     path("create/", TodoCreateView.as_view(), name="todo_create"),
     # タスク詳細
     path("<int:pk>/detail/", TodoDetailView.as_view(), name="todo_detail"),
+    # タグ作成
+    path("tags/create/", TagCreateView.as_view(), name="tag_create"),
 ]

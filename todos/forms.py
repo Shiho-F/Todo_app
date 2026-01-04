@@ -3,6 +3,8 @@ from django import forms
 # フォームのフィールド、widget・バリデーションを定義するために使用する
 from django.contrib.auth.models import User
 
+from todos.models import Todo, Tag
+
 # Django標準ユーザーモデルをインポート
 # DjangoはUserモデルを参照する場合はget_user_modelを推奨しているが(将来Userを拡張できるようにするため)
 # 今回は標準Userを使用するため、Userを直接参照している
@@ -78,3 +80,37 @@ class LoginForm(AuthenticationForm):
         self.fields["password"].widget = forms.PasswordInput(
             attrs={"class": "form-control"}
         )
+
+
+# タスク作成フォーム
+class TodoForm(forms.ModelForm):
+    # forms.ModelFormを継承するとTodoモデルのフィールドからフォーム部品を自動で生成できる
+    class Meta:
+        # ModelFormの設定を書く内側のクラス
+        model = Todo
+        fields = [
+            "title",
+            "description",
+            "due_date",
+            "tags",
+        ]
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop("user", None)
+        # TodoCreateViewで渡してるkwargsの中のuserを受け取って
+        # kwargs(キーワード引数の辞書)から""user"を取り出して
+        # user変数に入れる
+        # そしてkwargsから"user"を消す
+        # user　がなければ　None
+        # popは値を取り出して、元の辞書からは消える
+        super().__init__(*args, **kwargs)
+        # 親クラス(ModelForm)の初期化処理を実行
+        # ここでself.fieldが作られる
+        if user is not None:
+            # userがきたその時だけ、次の処理をする
+            # userを渡さない場面は山ほどあるためNoneを想定する
+            self.fields["tags"].queryset = Tag.objects.filter(user=user)
+            # self.fields["tags"]：TodoFormに含まれるフィールドの辞書から
+            # TodoモデルからManyToManyField(Tag)からtagsを取り出している
+            # .queryset:DBから取ってきたQuerySet(候補の集合)をフォームフィールドに
+            # 設定(紐付け)してUIの選択肢として表示させる

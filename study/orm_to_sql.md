@@ -95,3 +95,11 @@
 
 # ・論理設計：どんなデータを、どんな関係で持つかを考える段階
 # ・物理設計：それをDBにどう作るかを決める段階
+
+
+## タグの一覧表示と絞り込みのSQL
+SELECT DISTINCT todo.*
+FROM todo
+JOIN todo_tags ON todo.id = todo_tags.todo_id
+JOIN tag ON tag.id = todo_tags.tag_id
+WHERE tag.id IN (1, 3);

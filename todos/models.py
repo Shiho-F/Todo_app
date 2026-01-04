@@ -97,4 +97,10 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        unique_together = ("user", "name")
+        # unique_together:
+        # userとnameの組み合わせに対してユニーク制約をかける
+        # 同一ユーザー内で同じタグ名を重複して作れないようにする
+
     # ここではタグの名前を表示させている
