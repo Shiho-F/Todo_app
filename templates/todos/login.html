@@ -15,8 +15,13 @@
                 {{ form.password }}
             </div>
             <button type="submit" class="btn btn-success w-100">ログイン</button>
+            
+            <div class="text-center mt-3">
+                <span class="text-body-secondary">アカウントをお持ちでない方は</span>
+                <a href="{% url 'signup' %}">サインアップ</a>
+            </div>
 
         </form>
     </div>
-    </div>
-    {% endblock content %}
+</div>
+{% endblock content %}

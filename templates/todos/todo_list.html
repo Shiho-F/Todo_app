@@ -1,44 +1,164 @@
 {% extends 'base.html' %}
 
-{% block header %}
-
-<a href="{% url "logout" %}">ログアウト</a>
-
-{% endblock header %}
 
 {% block content %}
-
-<form method="get">
-    {% for tag in all_tags %}
-    {% comment %} タグ一覧(all_tags)に入っているタグを1個ずつ順番に扱う {% endcomment %}
-    <label>
-        <input type="checkbox" class="form-check-input" name="tag" value="{{ tag.id }}"
-        {% if tag.id|stringformat:"s" in selected_tag_ids %}checked{% endif %}>
-        {% comment %}
-        selected_tag_idsはGETパラメータから取得した「現在の検索条件(選択中のタグID)」の一覧
-        tag.id|stringformat:"s"は、DBのtag.id(int)を検索条件(文字列)と型を揃えて比較するため、文字列に変換している
-        現在、描画しているタグのIDがselected_tag_idsに含まれている場合、
-        「このタグは検索条件として選択中」と判断し、checkedを付けて画面上のチェック状態を検索条件と一致させている。 
-        {% endcomment %}
-        {{ tag.name }}
-    </label>
-    {% endfor %}
-    <button type="submit" class="btn btn-primary">絞り込み</button>
-</form>
-
-{% comment %} ここからforループ {% endcomment %}
-{% for todo in todos %}
-{% comment %} 
-todoの一覧が入っているのはデフォルトでオブジェクトリストになるので
-全てのtodoが入っているオブジェクトリストの中から、1つずつ変数todoの中にデータが入っていく
+<div class="container">
+{% comment %}
+BootstrapのLayout→Containers
+画面全体の横幅を統一し、レスポンシブ時の余白をBootstrapに任せるためcontainerを使用 
 {% endcomment %}
-<h3>{{ todo.title }}</h3>
-<p>{{ todo.due_date|default:"期限なし"}}</p>
-{% if todo.is_completed %}
-    <P>完了</P>
-{% else %}
-    <p>未完了</p>
-{% endif %}
-{% endfor %}
 
-{% endblock content %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">タスク一覧</h2>
+        <a href="{% url 'todo_create'%}" class="btn btn-primary">＋新規タスク</a>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                {% comment %}  
+                d-flex=display: flex
+                この中身はフレックスレイアウトで並べます。とういう横並びレイアウトの土台
+                justify-content-between=justify-content: space-between;
+                左右の要素を端と端に配置
+                align-items-center=align-items: center;
+                縦方向の中央揃え
+                mb-3=margin-bottom: 1rem;
+                下に少し余白を作る
+                {% endcomment %}
+                <h6 class="mb-0">タグで絞り込み</h6>
+                {% comment %} mb-0:下の余白を０にする {% endcomment %}
+                <a href="{% url 'tag_create'%}" class="btn btn-sm btn-outline-secondary">＋タグ追加</a>
+                {% comment %} btn-sm:ボタンサイズを小さくする {% endcomment %}
+            </div>
+            
+            <form method="get">
+                {% for tag in all_tags %}
+                <div class="form-check form-check-inline">
+                    {% comment %}
+                    form-check:チェックボックス専用のBootstrapクラス
+                    これがあることで正しい位置関係で配置してくれる
+                    form-check-inline:チェック項目を横並びにするためのオプション
+                    この２つがあることで「この中はチェックボックス1個分です」＋「横並びに表示してください」という宣言になる
+                    {% endcomment %}
+                    
+                    {% comment %} タグ一覧(all_tags)に入っているタグを1個ずつ順番に扱う {% endcomment %}
+                    <input 
+                    type="checkbox"
+                    id="tag{{ tag.id }}"
+                    {% comment %}
+                    inputのidとlabelのforを一致させることで
+                    「このlabelはどのinputの説明か」をブラウザに伝えている
+                    その結果、labelをクリックすると対応するinputが操作される
+                    {% endcomment %}
+                    class="form-check-input" 
+                    name="tag" value="{{ tag.id }}"
+                    {% if tag.id|stringformat:"s" in selected_tag_ids %}checked{% endif %}>
+                    {% comment %}
+                    selected_tag_idsはGETパラメータから取得した「現在の検索条件(選択中のタグID)」の一覧
+                    tag.id|stringformat:"s"は、DBのtag.id(int)を検索条件(文字列)と型を揃えて比較するため、文字列に変換している
+                    現在、描画しているタグのIDがselected_tag_idsに含まれている場合、
+                    「このタグは検索条件として選択中」と判断し、checkedを付けて画面上のチェック状態を検索条件と一致させている。 
+                    {% endcomment %}
+                    <label class="form-check-label" for="tag{{ tag.id }}">
+                        {{ tag.name }}
+                    </label>
+                </div>
+                {% endfor %}
+                
+                <div class="mt-3">
+                    {% comment %}
+                    mt:margin-top/3:Bootstrapが決めているデフォルトの余白サイズ
+                    数字のスケールで余白が小さくなったり大きくなったりする0→５(大)
+                    {% endcomment %}
+                    <button type="submit" class="btn btn-primary">絞り込み</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="row">
+        {% comment %}
+        BootstrapのLayout→Gridの中にrow/col-*がある
+        rowは横並びレイアウトを作るための親。この中の要素を横に並べますという宣言
+        rowの中にcol-*を入れる。必ずrow＋col-*はセットになる
+        
+        {% endcomment %}
+        {% comment %} ここからforループ {% endcomment %}
+        {% for todo in todos %}
+        <div class="col-md-6 mb-3">
+            {%comment %}
+            col-md-6=レスポンシブ
+            スマホ→一列/タブレット２列
+            forループで生成したタスクの要素を繰り返すのでcolはforループの中に入れる
+            col=列
+            md=タブレット以上
+            ６=半分(１２分割)
+            画面幅がmd(タブレット以上)なら、横幅を１２分割のうち６使う
+            {% endcomment %}
+            <div class="card h-100 position-relative">
+                {% comment %}
+                ここでのcardは外枠
+                h-100=height:100%;
+                つまり親要素(col-md-6)の高さを基準にして、100%にする
+                stretched-linkの親にposition-relativeが必要
+                {% endcomment %}
+                <a href="{% url 'todo_detail' todo.pk %}" class="stretched-link"></a>
+                {% comment %}
+                urlにtodo.pkが必要なのはURLに含まれるpkからどのTodoなのか判別するため
+                stretched-link：
+                カード全体をクリック可能にするためにBootstrapユーティリティ。
+                position-relativeを待つ親要素の範囲いっぱいに見えないリンクを広げている  
+                {% endcomment %}
+                
+                <div class="card-body">
+                    {% comment %} 
+                    card-body=中身専用ゾーン
+                    中身にちょうどいい余白(padding)を自動で入れてくれる 
+                    {% endcomment %}
+
+                    {% comment %} タスクに紐づいているタグを表示 {% endcomment %}
+                    <div class="mb-2">
+                        {% for tag in todo.tags.all %}
+                            <span class="badge text-bg-light text-body-secondary me-1">
+                                {{ tag.name }}
+                            </span>
+                        {% endfor %}
+                    </div>
+
+
+                    <h5 class="card-title">{{ todo.title }}</h5>
+                    {% comment %}
+                    card-title:これはカードのタイトルです。と意味を伝える宣言 
+                    ＋Bootstrapが想定する見た目を少しだけ当ててくれる
+                    {% endcomment %}
+                    <p class="card-text">
+                        {% comment %}
+                        card-text:これはカードの本文テキストです。と宣言している。 
+                        ＋Bootstrapが想定する余白、文字扱いを少しだけ当ててくれる
+                        {% endcomment %}
+                        {{ todo.due_date|default:"期限なし"}}
+                    </p>
+                    {% if todo.is_completed %}
+                    <span class="badge text-bg-success">完了</span>
+                    {% comment %}
+                    「文書」じゃなくて「状態ラベル」だからpタグではなくspanタグを使用する
+                    badge：タスクの状態を示すラベル表示用のBootstrapクラス
+                    text-bg-success:完了・正常状態を示すBootstrapの背景色と文字をセットで指定するクラス
+                    BootstrapのComponents→Badge
+                    {% endcomment %}
+                    {% else %}
+                    <span class="badge text-bg-secondary">未完了</span>
+                    {% comment %}
+                    text-bg-secondary:背景色と文字色をセットで指定する未完了など、控えめに表示したい状態を表す 
+                    {% endcomment %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+    
+    {% endblock content %}
