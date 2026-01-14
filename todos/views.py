@@ -4,7 +4,11 @@ from django.views.generic import ListView, DetailView, CreateView
 # DetailView：詳細表示
 # CreateView:タスクを作成
 from django.contrib.auth.views import LoginView, LogoutView
+
 # loginView:ログイン処理を全部やってくれるDjango標準のView
+from django.views import View
+# ViewはDjangoが用意している一番基本のViewクラス
+# 自分でGET/POSTを自分で書くときの土台(自分で処理を書く用)
 
 from django.urls import reverse_lazy
 
@@ -14,6 +18,8 @@ from .forms import CustomUserCreationForm, LoginForm, TodoForm
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 # LoginRequiredMixin：ログインしているユーザーだけにアクセスを許可するView
+
+from django.shortcuts import get_object_or_404, redirect
 
 
 # サインアップビュー
@@ -103,6 +109,35 @@ class TodoDetailView(LoginRequiredMixin, DetailView):
     template_name = "todos/todo_detail.html"
     context_object_name = "todo"
     # ここでは1件のタスクを取り扱うので単数形
+
+    def get_queryset(self):
+        return Todo.objects.filter(user=self.request.user)
+
+    # LoginRequiredMixin=ログインしているかを判断している
+    # get_queryset/filter(user=...)=ログインユーザーののデータかを判断している
+    # この二つが揃って初めてセキュリティが安全になる
+
+
+# タスクの詳細画面フラグ切り替え用ビュー(完了/未完了)
+class TodoToggleCompleteView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        # POSTリクエストが来た時だけ動くメソッド
+        # request:今来たリクエスト情報(ログインユーザー、GET/POSTデータが入っている)
+        # pk：URLから渡されるTodoのID
+        todo = get_object_or_404(Todo, pk=pk, user=request.user)
+        # Todo1件取りに行く
+        # pk=pk:このIDのTodoを探す
+        # user=request.user：ログイン中のユーザーのTodoだけに限定
+        # 見つからなければ４０４(存在しない扱い)を返す
+        todo.is_completed = not todo.is_completed
+        # is_completed(完了フラグ)を反転させる
+        # クリックするたびに完了/未完了が切り替わる(トグル)
+        todo.save()
+        # DBに保存
+        return redirect("todo_detail", pk=pk)
+        # redirect("todo_detail", pk=pk):
+        # urls.pyのname="todo_detail"を探して
+        # そのURLにpkを埋めて移動するという意味
 
 
 # タスクの作成ビュー

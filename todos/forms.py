@@ -94,6 +94,14 @@ class TodoForm(forms.ModelForm):
             "due_date",
             "tags",
         ]
+        widgets = {
+            "title": forms.TextInput(attrs={"class": "form-control"}),
+            "description": forms.Textarea(attrs={"class": "form-control"}),
+            "due_date": forms.DateInput(
+                attrs={"class": "form-control", "type": "date"}
+            ),
+            "tags": forms.CheckboxSelectMultiple(),
+        }
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user", None)

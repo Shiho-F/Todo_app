@@ -8,6 +8,7 @@ from todos.views import (
     MyLoginView,
     MyLogoutView,
     TagCreateView,
+    TodoToggleCompleteView,
 )
 
 urlpatterns = [
@@ -25,6 +26,12 @@ urlpatterns = [
     path("create/", TodoCreateView.as_view(), name="todo_create"),
     # タスク詳細
     path("<int:pk>/detail/", TodoDetailView.as_view(), name="todo_detail"),
+    # タスク詳細フラグ切り替え用(完了/未完了)
+    path(
+        "<int:pk>/detail/toggle/",
+        TodoToggleCompleteView.as_view(),
+        name="todo_toggle_complete",
+    ),
     # タグ作成
     path("tags/create/", TagCreateView.as_view(), name="tag_create"),
 ]

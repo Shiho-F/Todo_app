@@ -1,3 +1,43 @@
-<h2>{{ todo.title }}</h2>
-<p>{{ todo.description }}</p>
-<p>{{ todo.due_date }}</p>
+{% extends "base.html" %}
+
+{% block content%}
+
+<div class="container">
+    <a href="{% url 'todo_list'%}" class="btn btn-link mb-3">タスク一覧に戻る</a>
+    <div>
+        <h2 class="mb-3">タスク詳細</h2>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            {% comment %} タスクに紐づいてるタグを表示 {% endcomment %}
+            <div class="mb-3">
+                {% for tag in todo.tags.all %}
+                <span class="badge text-bg-secondary">{{ tag.name }}</span>
+                {% empty %}
+                <span class="text-body-secondary">タグなし</span>
+                {% endfor %}
+            </div>
+
+            {% comment %} タスク詳細表示 {% endcomment %}
+            <div> 
+                
+                <h3 class="card-title mb-3">{{ todo.title }}</h3>
+                <h5 class="card-text mb-3">{{ todo.description }}</h5>
+                <p class="card-text text-body-secondary mb-4">{{ todo.due_date|default:"期限なし" }}</p>
+                
+            </div>
+
+            <form method="POST" action="{% url 'todo_toggle_complete' todo.pk %}" >
+                {% csrf_token %}
+
+                {% if todo.is_completed %}
+                <button type="submit"  class="btn btn-outline-secondary">未完了に戻す</button>
+                {% else %}
+                <button type="submit" class="btn btn-success">完了にする</button>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+    {% endblock content %}

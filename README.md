@@ -24,7 +24,7 @@ Django × Docker × MySQL で作る個人用Todoアプリ
 - Docker / docker-compose
 - AWS(EC2)
 
-##　設計
+## 設計
 
 ### ER図
 ![ER図](docs/er_diagram.png)
