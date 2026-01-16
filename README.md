@@ -36,3 +36,29 @@ Django × Docker × MySQL で作る個人用Todoアプリ
 ![画面遷移図](docs/screen_transition.png)
 
 ※ URL設計は実装前にNotionで整理した上で開発しています
+
+## 開発環境(ローカル)
+
+本プロジェクトでは、Pythonの依存関係にPoetryを使用しています。
+
+### 使用バージョン
+- Python 3.11
+- Django 5.0.6
+- Poetry
+
+### セットアップ手順(ローカル)
+
+#### 1. Poetryのインストール(Mac)
+```bash
+brew install poetry
+```
+#### 2. 依存関係のインストール
+```bash
+poetry install
+```
+#### 3.開発サーバーの起動
+```bash
+poetry run python manage.py runserver
+```
+ブラウザで以下にアクセスしてください。
+http://127.0.0.1:8000/todos/
