@@ -60,5 +60,35 @@ poetry install
 ```bash
 poetry run python manage.py runserver
 ```
-ブラウザで以下にアクセスしてください。
+
+## 開発環境の起動(Docker)
+
+Docker / Docker Compose を使用して開発環境を構築します。
+
+```bash
+docker compose up --build
+```
+上記コマンドを実行すると、以下が自動で行われます。
+- Python 3.11 環境の構築
+- Poetryのインストール
+- pyproject.toml/poetry.lockに基づく依存関係のインストール
+- Django開発サーバーの起動
+
+起動後、ブラウザで以下にアクセスしてください。
 http://127.0.0.1:8000/todos/
+
+※ 本アプリでは`/todos/`を起点に画面を表示しています。
+
+## 開発環境の停止
+
+```bash
+docker compose down
+```
+
+## 依存関係管理について
+ 
+本プロジェクトでは、Pythonの依存関係管理にPoetryを使用しています。
+
+- pyproject.toml/poetry.lockにより依存関係を管理
+- Dockerfile内で`poetry install --no-root`を実行し、アプリケーション本体はvolume経由で利用しています。
+- 開発時のコード変更は即座にコンテナに反映されます。
