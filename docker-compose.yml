@@ -10,21 +10,46 @@ services:
     # このディレクトリ(.)にあるDockerfileを使ってコンテナを作る
     command: poetry run python manage.py runserver 0.0.0.0:8000
     # 起動コマンド
-    ports:
-      - "8000:8000"
-    # ローカルPC:8000 → コンテナ:8000
+
+    # これはnginxを入れたことで不要になったためコメントアウト
+    # レスポンスの入り口をNginxのみにするため
+    # ports:
+    #   - "8000:8000"
+    # # ローカルPC:8000 → コンテナ:8000
+
+
     volumes:
       - .:/app
     # ローカルのプロジェクトフォルダ　.(Todo_app)を
     # コンテナ内の/appにバインドマウントしている
     # ローカルの変更が即コンテナに反映される
+
     working_dir: /app
     # コマンドの実行場所を/appに指定し、/app内にあるDjangoプロジェクトのコード(manage.py)
     # を使って、 Dockerがその場所でサーバー起動コマンドを実行している
     # (poetry run python manage.py runserver)
     # コンテナの中にはLinuxファイルシステム(OSっぽく見えるもの)がある
     # /appはそのLinuxファイルシステム内のディレクトリの一つ
-    
+
+    expose:
+      - "8000"
+    # nginx → web:8000 → Django
+    # Dockerネットワーク内だけで有効
+    # nginxリクエスト専用
+
+  nginx:
+  # サービス名
+    image: nginx:1.25
+    # Docker Hubの公式イメージを使うと言う意味
+    ports:
+      - "80:80"
+    # ローカルPCの80番 → nginxコンテナの80番
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    # nginxコンテナ内で設定ファイルとして読み込まれる
+    # /etc/nginx/conf.d/default.confに
+    # ローカルの./nginx/default.confをバインドマウントしている
+  
 
     # バインドマウントとは
     # DockerをインストールしたPCのドキュメントやデスクトップなどDocker Engineの管理していない
@@ -32,5 +57,5 @@ services:
     # ディレクトリだけではなく、ファイル単位でもマウント可能
     # ローカルで編集した内容が即座にコンテナに反映されるため
     # 開発中に頻繁に触るソースコードなどに向いている
-
+  
     

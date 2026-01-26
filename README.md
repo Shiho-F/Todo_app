@@ -72,11 +72,14 @@ docker compose up --build
 - Python 3.11 環境の構築
 - Poetryのインストール
 - pyproject.toml/poetry.lockに基づく依存関係のインストール
-- Django開発サーバーの起動
+- Djangoアプリケーションの起動
+- Nginxを介したリバースプロキシの有効化
 
 起動後、ブラウザで以下にアクセスしてください。
-http://127.0.0.1:8000/todos/
 
+http://localhost/todos/
+
+※ 本アプリはNginx(80番ポート)経由でDjangoにアクセスする構成になっています。
 ※ 本アプリでは`/todos/`を起点に画面を表示しています。
 
 ## 開発環境の停止

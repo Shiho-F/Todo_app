@@ -110,6 +110,13 @@ LOGOUT_REDIRECT_URL = "login"
 # ログアウト後にどこへ行くか
 LOGIN_URL = "login"
 # ログインしてない人が「ログイン必須ページ」に来たとき、どこに飛ばすか
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+# SECURE_PROXY_SSL_HEADER：Djangoの公式設定項目
+# プロキシ(Nginx)経由のリクエストをDjangoが判定する際、
+# もし、X-Forwarded-Protoというヘッダーがあり、
+# その値がhttpsだった場合、
+# このリクエストは本当にhttpsだったと判断しても良い。とDjangoに伝える設定
+
 
 # Djangoでは認証はアプリ横断の仕組みとして設計されているため、
 # ログイン後や未認証時のリダイレクト先は
