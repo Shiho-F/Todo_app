@@ -8,7 +8,20 @@ services:
 
     build: .
     # このディレクトリ(.)にあるDockerfileを使ってコンテナを作る
-    command: poetry run python manage.py runserver 0.0.0.0:8000
+
+    # 新起動コマンド(Gunicorn)
+    command: poetry run gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 2
+    # poetry run ← poetryの仮想環境で
+    # gunicorn ← Gunicornを使って
+    # config.wsgi:application ← Djangoの起動入口
+    # --bind 0.0.0.0:8000 ← このポートで待ち受け
+    # --workers 2 → リクエストを並列処理するworkerプロセス数(CPUを使う主体の数)
+
+
+    # Gunicornの導入により不要になったためコメントアウト
+    # 本番環境では Django の開発用サーバ（runserver）は使用せず、
+    # WSGIサーバである Gunicorn を利用する。
+    # command: poetry run python manage.py runserver 0.0.0.0:8000
     # 起動コマンド
 
     # これはnginxを入れたことで不要になったためコメントアウト
