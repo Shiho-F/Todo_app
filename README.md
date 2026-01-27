@@ -60,6 +60,12 @@ poetry install
 ```bash
 poetry run python manage.py runserver
 ```
+## 実行サーバー構成について
+
+- ローカル開発環境：Django標準の開発用サーバー(`runserver`)を使用
+- Docker/本番環境：WSGIサーバーであるGunicornを使用してアプリケーションを起動
+
+Nginx → Gunicorn → Django
 
 ## 開発環境の起動(Docker)
 
