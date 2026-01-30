@@ -50,25 +50,85 @@ services:
     # Dockerネットワーク内だけで有効
     # nginxリクエスト専用
 
+    depends_on:
+      - db
+    # webコンテナ起動前に、MySQL(db)コンテナを先に起動させるため
+    # Django起動時にDBコンテナが未起動で接続エラーになるのを防ぐ目的
+    
+
   nginx:
   # サービス名
     image: nginx:1.25
     # Docker Hubの公式イメージを使うと言う意味
     ports:
       - "80:80"
-    # ローカルPCの80番 → nginxコンテナの80番
+      # ローカルPCの80番 → nginxコンテナの80番
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-    # nginxコンテナ内で設定ファイルとして読み込まれる
-    # /etc/nginx/conf.d/default.confに
-    # ローカルの./nginx/default.confをバインドマウントしている
-  
+      # nginxコンテナ内で設定ファイルとして読み込まれる
+      # /etc/nginx/conf.d/default.confに
+      # ローカルの./nginx/default.confをバインドマウントしている
+      - ./staticfiles:/app/staticfiles:ro
+      # ホスト側の./staticfilesをnginxコンテナ内のapp/staticfilesに
+      # バインドマウントしている
+      # :ro　→ 読み取り専用(nginx新たにstaticは作らず、配信のみを行うため)
+    depends_on:
+      - web
+    # Gunicorn(web)起動後にnginxを起動するため
 
-    # バインドマウントとは
-    # DockerをインストールしたPCのドキュメントやデスクトップなどDocker Engineの管理していない
-    # ファイルシステム上の既に存在するディレクトリやファイルをコンテナ内のパスに直接マウントする仕組み
-    # ディレクトリだけではなく、ファイル単位でもマウント可能
-    # ローカルで編集した内容が即座にコンテナに反映されるため
-    # 開発中に頻繁に触るソースコードなどに向いている
-  
+
+  db:
+    image: mysql:8.0
+    # MySQL8.0の公式Dockerイメージを指定
+    container_name: mysql
+    # 起動するコンテナの名前をmysqlに固定する
+    # なくても動くが、ログを見る際やコマンドを叩く際に名前を固定することで楽になる
+    environment:
+      # コンテナの中に渡す環境変数をここから書く宣言
+      MYSQL_DATABASE: todo_db
+      # 初回起動時にtodo_dbというDBを自動作成する
+      MYSQL_USER: todo_user
+      # 初回起動時にtodo_userという一般ユーザーを作る
+      MYSQL_PASSWORD: todo_pass
+      # 一般ユーザー(todo_user)のパスワード
+      MYSQL_ROOT_PASSWORD: rootpass
+      # MuSQLの管理者ユーザー(root)のパスワード
+    volumes:
+      - mysql_data:/var/lib/mysql
+      # mysql_data → 名前付きボリューム
+      # /var/lib/mysql　→ コンテナにボリュームマウントするためのマウント先(コンテナの中)
+      #　つまり名前付きボリューム(mysql_data)をMySQLのデータディレクトリにマウントしている 
+
+    command: --default-authentication-plugin=mysql_native_password
+    # MySQL8.0のデフォルト認証方式による、Django(mysqlclient)との
+    # 接続エラーを避けるために認証方式を指定している
+    # 今回は認証エラーを防ぐ目的で事前に指定しているが
+    # 本番環境や使用するクライアントの対応状況によって不要となる場合もある
+
+volumes:
+  mysql_data:
+  # mysql_dataという名前付きボリュームを作ると宣言している
+  # これがあることでボリュームマウントが成立する。
+
+
+
+# ボリュームマウントとは
+# ボリュームマウントはDocker Enginが管理している領域内にボリュームを作成し、
+# ディスクとしてコンテナにマウントする
+# 滅多に触らないが、消してはいけないファイルなどに使用する
+
+
+# バインドマウントとは
+# DockerをインストールしたPCのドキュメントやデスクトップなどDocker Engineの管理していない
+# ファイルシステム上の既に存在するディレクトリやファイルをコンテナ内のパスに直接マウントする仕組み  
+# ディレクトリだけではなく、ファイル単位でもマウント可能
+# ローカルで編集した内容が即座にコンテナに反映されるため
+# 開発中に頻繁に触るソースコードなどに向いている
+
+#　Dockerの消しては作る性質からコンテナ内のデータは消えてしまうため外にデータを残しておく必要がある 
     
+# コンテナ起動順
+# db → web → nginx
+
+# 構成
+# ブラウザ →(80番) Nginx　→(8000番) Gunicorn → Django → MySQL

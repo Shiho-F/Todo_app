@@ -101,3 +101,18 @@ docker compose down
 - pyproject.toml/poetry.lockにより依存関係を管理
 - Dockerfile内で`poetry install --no-root`を実行し、アプリケーション本体はvolume経由で利用しています。
 - 開発時のコード変更は即座にコンテナに反映されます。
+
+## 工夫した点、学んだこと
+
+- Djnago 5.0ではログアウト処理がPOSTメソッド必須になったため、テンプレートを`<a>`タグから`form`に変更して対応しました。
+- SQLiteからMySQLへ切り替え、`mysqlclient`のC拡張ライブラリをDocker環境でビルドするために必要なパッケージをDockerfileに追加しました。
+- 本番環境を想定し、DjangoはGunicorn経由で起動し、staticファイルはNginxから配信する構成としました。
+- `collectstatic`と`STATIC_ROOT`を設定し、Django開発サーバーと本番構成の違いを意識して実装しました。
+
+## 認証について
+- Django標準の認証機能を使用しています。
+- ログイン必須ページには`LoginRequiredMixin`を使用し、未ログイン状態ではログイン画面へリダイレクトされます。
+
+### インフラ・開発環境
+- Docker / docker-compose
+- AWS(EC2) ※デプロイ予定

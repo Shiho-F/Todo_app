@@ -30,7 +30,15 @@
             
             <div class="ms-auto">
             {% comment %} ms-auto:左側に巨大な余白を作る {% endcomment %}
-                <a href="{% url "logout" %}">ログアウト</a>
+                {% comment %}
+                Django5.0に対応するためコメントアウト。
+                Django5.0からログアウトはpostメソッドでないと動かなくなった
+                <a href="{% url "logout" %}">ログアウト</a> 
+                {% endcomment %}
+                <form method="post" action="{% url "logout" %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-link">ログアウト</button>
+                </form>
             </div>
         </div>
     </nav>

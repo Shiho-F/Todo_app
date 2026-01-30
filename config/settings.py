@@ -76,10 +76,33 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+
 DATABASES = {
+    # Djangoが使うDB接続設定の集合
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        # Djangoが標準で使うDB接続の名前
+        "ENGINE": "django.db.backends.mysql",
+        # どの種類のDBを使うか
+        # Django本体に最初から入っているMySQL用の接続エンジン
+        "NAME": "todo_db",
+        # 接続するデータベース名
+        # ymlファイルのdbコンテナと一致している必要がある
+        "USER": "todo_user",
+        # MySQLにログインするユーザー名
+        # ymlファイルのdbコンテナと一致している必要がある
+        "PASSWORD": "todo_pass",
+        # そのユーザーのパスワード
+        # ymlファイルのdbコンテナと一致している必要がある
+        "HOST": "db",
+        # DBサーバーの場所
+        # dbはサービス名=ホスト名になる
+        "PORT": "3306",
+        # MySQLが待受しているポート番号
+        # デフォルトが3306
+        # これはDjango標準のSQLite用設定(デフォルト)
+        # 今回はMySQLを使用するため不要
+        # "ENGINE": "django.db.backends.sqlite3",
+        # "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 
@@ -142,7 +165,18 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = "static/"
+# ブラウザがstaticファイルを取りに来る時のURLの入り口
+STATIC_URL = "/static/"
+
+# collectstaticの出力先(実態の置き場所)
+STATIC_ROOT = BASE_DIR / "staticfiles"
+# Djangoが管理するCSS/JSなどのstaticファイルを
+# collectstaic実行時に全てここへ集約するためのディレクトリ
+# Nginxはこのディレクトリを参照してstaticファイルを配信する
+
+# venvの時はrunserverがstaticを自動で処理してくれていたが、
+# Django + Gunicorn + Nginx構成ではDjangoはstaticを配信しないため
+# collectstaticとSTATIC_ROOTの設定が必要になる
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
