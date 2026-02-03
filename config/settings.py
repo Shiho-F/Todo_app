@@ -32,10 +32,16 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 DEBUG = os.environ.get("DJANGO_DEBUG") == "True"
 
 ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
     "35.74.232.169",
     "ec2-35-74-232-169.ap-northeast-1.compute.amazonaws.com",
 ]
-# 上２行は「.envに書いた値をPython(Django)が読み取るためのコード」
+# ローカル用も許可する
+# 127.0.0.1 = localhost
+
+# 本番用(EC2)
+# 37,38行目は「.envに書いた値をPython(Django)が読み取るためのコード」
 # SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 # os.environ：環境変数の一覧
 # get("DJANGO_SECRET_KEY")：その中からDJANGO_SECRET_KEYという名前の値を取ってくる

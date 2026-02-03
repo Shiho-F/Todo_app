@@ -9,6 +9,38 @@ services:
     build: .
     # このディレクトリ(.)にあるDockerfileを使ってコンテナを作る
 
+    env_file:
+      - .env
+    # environment:
+    #   DJANGO_DEBUG: "True"
+    # env.ファイルの中身をタイポしていたため、最初のコンテナ起動時に
+    # DJANGO_DEBUG が os.environ に読み込まれなかった。
+    # compose exec web env | grep DJANGO で確認した際に値が存在しなかったため、
+    # .env が正しく読まれているかを切り分ける目的で一時的に environment を使用した。
+    #
+    # 環境変数はコンテナ起動時に os.environ に読み込まれるため、
+    # 正しい .env を用いた状態でコンテナを作り直した後は
+    # environment を削除しても env_file 経由の設定で正常に動作する。
+    #
+    # ※ コンテナを削除（docker compose down）した場合は、
+    #   起動時に再度 env_file から読み込まれる。
+
+    
+    # .env
+    #   ↓
+    # Docker（env_file / environment）
+    #   ↓
+    # 箱（os.environ）
+    #   ↓
+    # Django（settings.py）
+
+
+
+    # 今までsetting.pyに直書きしていたSECRET_KEYを.envファイルに書いたため必要
+    # Django が参照する環境変数（SECRET_KEY / DEBUG など）を読み込む
+
+
+
     # 新起動コマンド(Gunicorn)
     command: poetry run gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 2
     # poetry run ← poetryの仮想環境で
