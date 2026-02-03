@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -18,14 +19,43 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
+# EC2でアプリを立ち上げるため、コメントアウト(Djangoデフォルト)
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-fwd=#f-8uj!cj*voa5v7z*sap6w)58depv%s-5p$m$j%ctwl5j"
+# SECRET_KEY = "django-insecure-fwd=#f-8uj!cj*voa5v7z*sap6w)58depv%s-5p$m$j%ctwl5j"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
+
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
+DEBUG = os.environ.get("DJANGO_DEBUG") == "True"
+
+ALLOWED_HOSTS = [
+    "35.74.232.169",
+    "ec2-35-74-232-169.ap-northeast-1.compute.amazonaws.com",
+]
+# 上２行は「.envに書いた値をPython(Django)が読み取るためのコード」
+# SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
+# os.environ：環境変数の一覧
+# get("DJANGO_SECRET_KEY")：その中からDJANGO_SECRET_KEYという名前の値を取ってくる
+# DEBUG = os.environ.get("DJANGO_DEBUG") == "True"
+# .envでは値が文字列になるため、"True"のときだけDEBUG=Trueになるように比較している
+# つまり、環境変数DJANGO_DEBUGの値が文字として"True"だったらDEBUGをTrueにする。
+# それ以外はFalseにする。
+
+# .env（文字）
+#    ↓
+# "True" / "False"
+#    ↓ 比較
+# True / False（Djangoが欲しい形）
+
+
+# 35.74.232.169↓
+# awsコンソールEC2のインスタンスのパブリックIPv4アドレス
+# ec2-35-74-232-169.ap-northeast-1.compute.amazonaws.com↓
+# awsコンソールEC2のインスタンスのパブリックIPv4 DNS名
+# どちらもAWSが自動で用意する
 
 
 # Application definition
