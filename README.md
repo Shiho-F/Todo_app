@@ -94,6 +94,23 @@ http://localhost/todos/
 docker compose down
 ```
 
+## 環境変数の管理について
+
+本アプリでは、SECRET_KEY や DEBUG などの設定値を`env_file`を通して
+Djangoに渡す構成としています。
+
+### .env　の例(ローカル)
+```bash
+DJANGO_SECRET_KEY=django-insecure-local-key
+DJANGO_DEBUG=True
+```
+
+※`.env`ファイルは機密情報を含むため、GitHubには含めていません。
+
+### 注意点
+- 環境変数は **コンテナ起動時に読み込まれる** ため、`.env`を変更した場合は`docker compose down` → `up`が必要です。
+- ローカル環境と本番環境で setting.pyを共通化し、環境差分は`.env`によって切り替える設計としています。 
+
 ## 依存関係管理について
  
 本プロジェクトでは、Pythonの依存関係管理にPoetryを使用しています。
