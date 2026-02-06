@@ -38,11 +38,31 @@
             </div>
             <div class="mb-3">
                 <label class="form-label" for="{{ form.password1.id_for_label }}">パスワード</label>
-                {{ form.password1 }}
+                <div class="input-group">
+                    {{ form.password1 }}
+                    <button type="button" class="btn btn-outline-secondary toggle-password"
+                    data-target="{{ form.password1.id_for_label }}"
+                    aria-label="パスワード表示">
+
+                    <i class="bi bi-eye-slash"></i>
+
+                    </button>
+
+                </div>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="{{ form.password2.id_for_label }}">パスワード確認用</label>
-                {{ form.password2 }}
+                <div class="input-group">
+                    {{ form.password2 }}
+                    <button type="button" class="btn btn-outline-secondary toggle-password"
+                    data-target="{{ form.password2.id_for_label }}"
+                    aria-label="パスワードを表示">
+
+                    <i class="bi bi-eye-slash"></i>
+
+                    </button>
+
+                </div>
             </div>
             <button type="submit" class="btn btn-success w-100">登録</button>
             {% comment %} 
