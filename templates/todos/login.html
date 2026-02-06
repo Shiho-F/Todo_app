@@ -12,7 +12,16 @@
             </div>
             <div class="mb-3">
                 <label class="form-label" for="{{ form.password.id_for_label }}">パスワード</label>
-                {{ form.password }}
+                <div class="input-group">
+                    {{ form.password }}
+                    <button type="button" class="btn btn-outline-secondary toggle-password"
+                    data-target="{{ form.password.id_for_label }}"
+                    aria-label="パスワードを表示">
+
+                    <i class="bi bi-eye-slash"></i>
+
+                    </button>
+                </div>
             </div>
             <button type="submit" class="btn btn-success w-100">ログイン</button>
             
